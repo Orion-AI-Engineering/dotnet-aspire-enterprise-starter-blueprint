@@ -1,0 +1,8 @@
+parameters:
+- name: environmentName
+  type: string
+  default: dev
+
+steps:
+- script: echo "Deploy to Azure Container Apps: ${{ parameters.environmentName }}"
+  displayName: Deploy ACA

@@ -1,0 +1,10 @@
+steps:
+- task: UseDotNet@2
+  inputs:
+    version: 9.0.x
+- script: dotnet restore Orion.Aspire.Starter.slnx
+  displayName: Restore
+- script: dotnet build Orion.Aspire.Starter.slnx --configuration Release --no-restore
+  displayName: Build
+- script: dotnet test Orion.Aspire.Starter.slnx --configuration Release --no-build
+  displayName: Test

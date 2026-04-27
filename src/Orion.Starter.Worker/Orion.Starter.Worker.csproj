@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+  <PropertyGroup>
+    <AssemblyName>Orion.Starter.Worker</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Orion.Starter.ServiceDefaults/Orion.Starter.ServiceDefaults.csproj" />
+  </ItemGroup>
+</Project>

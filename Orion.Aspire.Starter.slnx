@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Orion.Starter.Api/Orion.Starter.Api.csproj" />
+    <Project Path="src/Orion.Starter.AppHost/Orion.Starter.AppHost.csproj" />
+    <Project Path="src/Orion.Starter.ServiceDefaults/Orion.Starter.ServiceDefaults.csproj" />
+    <Project Path="src/Orion.Starter.Web/Orion.Starter.Web.csproj" />
+    <Project Path="src/Orion.Starter.Worker/Orion.Starter.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Orion.Starter.Api.Tests/Orion.Starter.Api.Tests.csproj" />
+    <Project Path="tests/Orion.Starter.ArchitectureTests/Orion.Starter.ArchitectureTests.csproj" />
+    <Project Path="tests/Orion.Starter.IntegrationTests/Orion.Starter.IntegrationTests.csproj" />
+    <Project Path="tests/Orion.Starter.Web.Tests/Orion.Starter.Web.Tests.csproj" />
+    <Project Path="tests/Orion.Starter.Worker.Tests/Orion.Starter.Worker.Tests.csproj" />
+  </Folder>
+</Solution>

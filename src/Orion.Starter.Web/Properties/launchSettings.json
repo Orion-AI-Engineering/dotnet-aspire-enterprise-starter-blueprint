@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Orion.Starter.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:59645;http://localhost:59646"
+    }
+  }
+}

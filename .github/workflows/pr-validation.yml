@@ -1,0 +1,16 @@
+name: pr-validation
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Basic repo validation
+        run: |
+          test -f README.md
+          test -d src
+          test -d tests

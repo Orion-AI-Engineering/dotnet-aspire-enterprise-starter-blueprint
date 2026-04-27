@@ -1,0 +1,10 @@
+@baseUrl = https://localhost:5001
+
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+  "customerName": "Ada Lovelace",
+  "productCode": "SKU-100",
+  "quantity": 2
+}

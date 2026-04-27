@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore
+        run: dotnet restore Orion.Aspire.Starter.slnx
+      - name: Build
+        run: dotnet build Orion.Aspire.Starter.slnx --configuration Release --no-restore
+      - name: Test
+        run: dotnet test Orion.Aspire.Starter.slnx --configuration Release --no-build

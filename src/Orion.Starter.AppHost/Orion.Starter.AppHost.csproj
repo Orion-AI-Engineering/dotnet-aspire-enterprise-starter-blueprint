@@ -1,0 +1,18 @@
+<Project Sdk="Aspire.AppHost.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UserSecretsId>daeaf8c7-3b40-47be-a32e-a33e84d6ef47</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Redis" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <ProjectReference Include="..\Orion.Starter.Api\Orion.Starter.Api.csproj" />
+    <ProjectReference Include="..\Orion.Starter.Web\Orion.Starter.Web.csproj" />
+    <ProjectReference Include="..\Orion.Starter.Worker\Orion.Starter.Worker.csproj" />
+  </ItemGroup>
+</Project>

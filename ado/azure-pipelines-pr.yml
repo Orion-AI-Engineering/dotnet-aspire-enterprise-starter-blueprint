@@ -1,0 +1,14 @@
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- bash: |
+    test -f README.md
+    test -d src
+    test -d tests
+  displayName: Basic validation

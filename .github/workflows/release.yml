@@ -1,0 +1,14 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create release archive
+        run: zip -r orion-aspire-starter.zip . -x "*.git*"

@@ -1,0 +1,5 @@
+{
+  "name": "orion-aspire-starter",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
+  "features": {}
+}
