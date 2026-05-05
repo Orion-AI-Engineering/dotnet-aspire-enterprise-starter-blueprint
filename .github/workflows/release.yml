@@ -1,14 +1,67 @@
-name: release
+name: deploy
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Azure environment name
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-  package:
+  deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_ENV_NAME: ${{ inputs.environment }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+
     steps:
       - uses: actions/checkout@v4
-      - name: Create release archive
-        run: zip -r orion-aspire-starter.zip . -x "*.git*"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install azd
+        run: |
+          curl -fsSL https://aka.ms/install-azd.sh | bash
+          echo "$HOME/.azure-dev/bin" >> $GITHUB_PATH
+
+      - name: Log in with Azure Developer CLI
+        shell: pwsh
+        run: |
+          azd auth login `
+            --client-id "$Env:AZURE_CLIENT_ID" `
+            --federated-credential-provider "github" `
+            --tenant-id "$Env:AZURE_TENANT_ID"
+
+      - name: Restore
+        run: dotnet restore Orion.Aspire.Starter.slnx
+
+      - name: Build
+        run: dotnet build Orion.Aspire.Starter.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Orion.Aspire.Starter.slnx --configuration Release --no-build
+
+      - name: Provision Infrastructure
+        run: azd provision --no-prompt
+        working-directory: .
+
+      - name: Deploy Application
+        run: azd deploy --no-prompt
+        working-directory: .

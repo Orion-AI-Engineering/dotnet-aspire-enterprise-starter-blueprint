@@ -1,3 +1,0 @@
-steps:
-- script: echo "Build and push images here"
-  displayName: Containerize

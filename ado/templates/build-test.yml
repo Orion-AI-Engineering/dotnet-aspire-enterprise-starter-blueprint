@@ -1,10 +1,37 @@
+name: build-$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  dotnetVersion: '10.0.x'
+  buildConfiguration: 'Release'
+  solutionPath: 'Orion.Aspire.Starter.slnx'
+
 steps:
-- task: UseDotNet@2
-  inputs:
-    version: 10.0.x
-- script: dotnet restore Orion.Aspire.Starter.slnx
-  displayName: Restore
-- script: dotnet build Orion.Aspire.Starter.slnx --configuration Release --no-restore
-  displayName: Build
-- script: dotnet test Orion.Aspire.Starter.slnx --configuration Release --no-build
-  displayName: Test
+  - checkout: self
+
+  - task: UseDotNet@2
+    displayName: 'Setup .NET'
+    inputs:
+      packageType: 'sdk'
+      version: '$(dotnetVersion)'
+
+  - script: dotnet restore $(solutionPath)
+    displayName: 'Restore'
+
+  - script: dotnet build $(solutionPath) --configuration $(buildConfiguration) --no-restore
+    displayName: 'Build'
+
+  - script: dotnet test $(solutionPath) --configuration $(buildConfiguration) --no-build
+    displayName: 'Test'

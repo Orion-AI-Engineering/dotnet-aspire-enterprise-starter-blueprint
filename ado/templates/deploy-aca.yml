@@ -1,8 +1,87 @@
-parameters:
-- name: environmentName
-  type: string
-  default: dev
+name: deploy-$(Date:yyyyMMdd)$(Rev:.r)
 
-steps:
-- script: echo "Deploy to Azure Container Apps: ${{ parameters.environmentName }}"
-  displayName: Deploy ACA
+trigger: none
+pr: none
+
+parameters:
+  - name: azureEnvironmentName
+    displayName: Azure environment name
+    type: string
+    default: dev
+    values:
+      - dev
+      - prod
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  dotnetVersion: '10.0.x'
+  buildConfiguration: 'Release'
+  solutionPath: 'Orion.Aspire.Starter.slnx'
+
+  # Replace this with the name of your Azure DevOps ARM service connection.
+  azureServiceConnection: 'YOUR-AZURE-SERVICE-CONNECTION-NAME'
+
+  # Replace these with your real values or move them to a variable group.
+  AZURE_SUBSCRIPTION_ID: 'YOUR-AZURE-SUBSCRIPTION-ID'
+  AZURE_LOCATION: 'uksouth'
+
+jobs:
+  - deployment: DeployAspireApp
+    displayName: 'Deploy Aspire app'
+    environment: ${{ parameters.azureEnvironmentName }}
+
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+
+            - task: UseDotNet@2
+              displayName: 'Setup .NET'
+              inputs:
+                packageType: 'sdk'
+                version: '$(dotnetVersion)'
+
+            - script: |
+                curl -fsSL https://aka.ms/install-azd.sh | bash
+                azd version
+              displayName: 'Install azd'
+
+            - script: dotnet restore $(solutionPath)
+              displayName: 'Restore'
+
+            - script: dotnet build $(solutionPath) --configuration $(buildConfiguration) --no-restore
+              displayName: 'Build'
+
+            - script: dotnet test $(solutionPath) --configuration $(buildConfiguration) --no-build
+              displayName: 'Test'
+
+            - task: AzureCLI@2
+              displayName: 'Provision and deploy with azd'
+              inputs:
+                azureSubscription: '$(azureServiceConnection)'
+                scriptType: bash
+                scriptLocation: inlineScript
+                addSpnToEnvironment: true
+                workingDirectory: '$(System.DefaultWorkingDirectory)'
+                inlineScript: |
+                  azd auth login \
+                    --client-id "$servicePrincipalId" \
+                    --tenant-id "$tenantId" \
+                    --federated-credential-provider "azure-pipelines"
+
+                  azd provision \
+                    --no-prompt \
+                    -e "${{ parameters.azureEnvironmentName }}" \
+                    --subscription "$(AZURE_SUBSCRIPTION_ID)" \
+                    --location "$(AZURE_LOCATION)"
+
+                  azd deploy \
+                    --no-prompt \
+                    -e "${{ parameters.azureEnvironmentName }}"
+              env:
+                AZURE_ENV_NAME: ${{ parameters.azureEnvironmentName }}
+                AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+                AZURE_LOCATION: $(AZURE_LOCATION)

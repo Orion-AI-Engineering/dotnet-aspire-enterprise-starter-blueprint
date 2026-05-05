@@ -10,7 +10,6 @@ pool:
 
 steps:
 - template: templates/build-test.yml
-- template: templates/containerize.yml
 - template: templates/deploy-aca.yml
   parameters:
     environmentName: ${{ parameters.environmentName }}

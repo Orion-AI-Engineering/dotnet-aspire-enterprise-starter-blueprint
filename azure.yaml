@@ -1,0 +1,11 @@
+name: orion-aspire-starter
+
+infra:
+  provider: bicep
+  path: infra
+
+services:
+  app:
+    language: dotnet
+    project: ./src/Orion.Starter.AppHost/Orion.Starter.AppHost.csproj
+    host: containerapp
